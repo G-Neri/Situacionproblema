@@ -1,93 +1,161 @@
-# Calculadora de dosis por gramaje para medicamentos sin prescipción médica
-Este proyecto se basa en la siguiente página web [calculadora](https://www.fisterra.com/ayuda-en-consulta/calculos/calculos-dosis-medicamento-mg-dosis/) 
-donde para usarse se sigue el siguiente comporamiento:
+# Calculadora de dosis por gramaje (medicamentos sin prescripción)
 
->Ejemplo 1: Augmentine "125" suspensión, (125/31,25 mg/5 ml)
-> 
->Paso 1: Introducir el peso del paciente. Por ejemplo: 8 kg.
->Paso 2: Introducir la posología deseada. Por ejemplo: 40 mg/kg/día.
->Paso 3: Introducir la presentación. Suspensión.
-> 
->Con estos datos se obtiene la dosis al día: 320 mg/día.
->
->Paso 4: Elegir el número de dosis al día: 3 dosis = cada 8 horas.
->Paso 5: Introducir los mg que contiene la unidad (en este caso el ml).
->            Si la concentración es de 125 mg/5 ml. Los mg/ml = 125/5 = 25 mg/ml.
->            Para resolver este cálculo tenemos a la derecha otra calculadora.
->
->Obtenemos: 106,67 mg/dosis = 4,28 ml cada 8 horas.
+Este proyecto implementa una calculadora de dosis basada en el peso del paciente, la posología (mg/kg/día) y la presentación del medicamento. Además, integra registro y consulta de medicinas, ordenamientos y búsquedas por gramaje.
 
-Adicionalmente incluyo las funciones para registrar nuevo medicamentos y ver los medicamentos registrados 
-por orden alfabético o por cantidad  de gramaje 
+## Flujo de uso (ejemplo real)
 
-## SICT0302B: Toma decisiones 
+Ejemplo 1: Augmentine “125” suspensión (125/31.25 mg/5 ml)
 
-### Selecciona y usa una estructura lineal adecuada al problema
+Peso del paciente: 8 kg
 
-Uso una lista doblemente encadenada para regristrar las medicinas porque quiero acceder rápidamente a la registrada más recientemente (head), 
-pero también necesito consultar cuál fue la primera que se agrego (tail), cada medicina es un objeto que contiene (...   ) 
-los elementos se pueden insertar y eliminar usando la lista como se muestra en el código en las funciones 
-agrega medicina, elimina medicina, y obten gramaje, que se encuentran en el archivo medicinas.h en las líneas 55, 80 y 124 respectivamente.
+Posología deseada: 40 mg/kg/día
 
+Presentación: Suspensión
 
-### Selecciona un algoritmo de ordenamiento adecuado al problema
+Dosis al día = 8 kg × 40 mg/kg/día = 320 mg/día
 
-Para este problema utilice un algoritmo de tipo merge sort, para poder organizar las medicinas por orden alfabético ascendente y despues descendente
-use merge sort porque es rápido en la mayoría de los casos y porque es poco probable que me encuentre son su peor caso, ya que las lista inicial siempre está desordenada.
-Las fuciones donde se puede ver es en ordena medicinas ascendente y ordena medicina descendente en el archivo reportes.h las líneas 50 y 78.
+Frecuencia: 3 dosis/día (cada 8 h)
 
-### Usa un árbol adecuado para resolver un problema
+Concentración: 125 mg/5 ml → 25 mg/ml
 
-Usé un BST para ordenar las medicinas por su gramaje y poder encontrar rápidamente medicinas con gramaje similar.
-Usé un BST porque mi lista incial viene desordenada, por lo que es poco probable que el BST se degenere. 
+Dosis por toma = 320 mg / 3 = 106.67 mg
 
-Las funciones donde lo uso es en obten medicina por gramaje  y  medicinas con mismo gramaje que se encuentran en reportes.h en 
-las líneas 100 y 130
+Volumen por toma = 106.67 mg ÷ 25 mg/ml ≈ 4.28 ml cada 8 horas
 
-## SICT0301B: Evalúa los componentes
+Además, el sistema permite registrar medicamentos y ver listados por orden alfabético o por gramaje.
 
-### Presenta Casos de Prueba correctos y completos para todas las funciones y procedimientos del programa,
+## Estructuras y módulos principales
 
-los casos de pruebas para todas las funciones se encuentran pruebas.cpp donde se prueban las funciones de: 
+Lista doblemente enlazada para registrar medicinas (alta, baja, consulta rápida a head y acceso a tail).
 
-la lista doblemente ligada de medicinas
+Ordenamiento (Merge Sort) para organizar medicinas por nombre (asc/desc).
 
-el ordenamiento sobre la lista ligada de medicinas
+Árbol binario de búsqueda (BST) para indexar por gramaje y localizar rápidamente mismas o similares concentraciones.
 
-el acceso al BST por gramaje
+I/O: lectura/escritura desde/ hacia medicinas.csv.
 
-### Hace un análisis de complejidad correcto y completo para todo el programa y sus compenetes,
+En el código se incluyen funciones como: agregaMedicina, eliminaMedicina, obtenGramaje, ordenaMedicinasAsc/Desc, obtenPorGramaje, medicinasMismoGramaje, etc. (ver medicinas.h y reportes.h).
 
-#### lista de medicinas
+## Formato de datos
 
-función de acceso por valor: O(n) por que para llegar a la medicina tengor que recorrer la listay comparar cada valor.
+medicinas.csv
 
-funcion de inserción: O(1) siempre uso insert first.
+Nombre, mg
+Ibuprofeno, 200
+Ibuprofeno, 400
+Paracetamol, 300
 
-función de borrado: O(n/2 + b) porque para borrarla tengo que buscar la posición y uso head o tail y ya que la encuentro me toma b pasos constantes borrarla 
+## Cálculos implementados
 
-#### ordenamiento de medicinas
+Dosis diaria (mg/día): peso_kg * posologia_mg_kg_dia
 
-ordenamiento con merge sort: ...
+Dosis por toma (mg): mg_dia / dosis_por_dia
 
-#### uso de árbol
+Volumen por toma (ml): mg_por_toma / (mg_por_ml), donde mg_por_ml = mg_en_envase / ml_en_envase
 
-crear árbol de gramaje: ...
+## Criterios SICT
+SICT0302B — Toma decisiones
 
-agregar nodo a árbol gramaje: ...
+Estructura lineal seleccionada: Lista doblemente enlazada
 
-econtrar nodo en árbol gramaje: ...
+Motivo: permite insertar siempre en O(1) al inicio (última medicina registrada accesible con rapidez), recorrer en ambos sentidos y, si se requiere, acceder a la primera añadida (tail).
 
-## SICT0303B: Implementa acciones científicas 
+Complejidad típica:
 
-### Implementa mecanismos para consultar información de las estructuras correctos y útiles dentro de un programa.
+Búsqueda por valor: O(n) (recorrido y comparación).
 
-El programa tiene la opción de buscar medicinas por nombre direcamente en la lista (opción 3 en el menú)
-El programa muestra resportes ordenados de medicinas (opción 4 en el menú)
-El programa permite obtener medidas de gramaje del árbol (opción 5 en el menú)
+Inserción en head: O(1).
 
-### Implementa mecanismos de lectura de archivos correctos y útiles dentro de un programa. Usar de manera
-Las medicinas están registradas en el archivo medicinas.csv de donde se leen al iniciar el programa.
+Eliminación por valor: O(n) (búsqueda + unlink en O(1)).
 
-### Implementa mecanismos de escritura de archivos correctos y útiles dentro de un programa. Usar de manera
-Las medicinas agregadas se guardan al final del archivo medicinas.csv, con la función agrega nueva medicina, para que no tengan que ser recapturadas cada que vez que se corre el programa.
+Algoritmo de ordenamiento: Merge Sort (sobre lista)
+
+Motivo: Es estable, tiene O(n log n) en el mejor/promedio/peor caso, y funciona muy bien sobre listas enlazadas (no requiere acceso aleatorio).
+
+Uso: ordenar por nombre ascendente y descendente.
+
+Árbol adecuado: BST por gramaje
+
+Motivo: facilita búsquedas por valor (encontrar gramaje exacto o cercano) y listar por rangos.
+
+Complejidad (BST no balanceado):
+
+Inserción / búsqueda: promedio O(log n), peor O(n) (si se degrada).
+
+En este problema la entrada suele venir desordenada, reduciendo la probabilidad de degeneración.
+
+SICT0301B — Evalúa los componentes
+
+Casos de prueba (archivo pruebas.cpp):
+
+Lista doblemente enlazada:
+
+Inserción en head, eliminación por valor, búsqueda.
+
+Ordenamiento:
+
+Merge Sort por nombre (asc/desc), verifica orden y estabilidad en empates.
+
+Árbol (BST) por gramaje:
+
+Inserción en BST, búsqueda exacta y por “mismo gramaje”, recorrido in-order.
+
+Análisis de complejidad
+
+Lista doblemente enlazada
+
+Acceso por valor: O(n)
+
+Inserción en head: O(1)
+
+Eliminación por valor (buscar + unlink): O(n)
+
+Ordenamiento (Merge Sort en lista)
+
+Tiempo: O(n log n) en todos los casos
+
+Espacio: O(log n) por recursión
+
+Estable: Sí
+
+BST por gramaje
+
+Construcción (n inserciones): promedio O(n log n), peor O(n²)
+
+Búsqueda/Inserción individual: promedio O(log n), peor O(n)
+
+I/O
+
+Lectura CSV: O(n)
+
+Escritura CSV: O(n)
+
+## SICT0303B — Implementa acciones científicas
+
+Consultas útiles:
+
+Búsqueda de medicinas por nombre (lista).
+
+Reportes ordenados por nombre (asc/desc).
+
+Consultas al BST: obtener por gramaje o listar con mismo gramaje.
+
+Lectura de archivos: carga medicinas.csv al inicio.
+
+Escritura de archivos: los nuevos registros se persisten en medicinas.csv para no recapturar cada ejecución.
+
+## Interfaz (menú sugerido)
+
+Registrar nueva medicina
+
+Eliminar medicina
+
+Buscar por nombre
+
+Reporte ordenado (nombre asc/desc, Merge Sort)
+
+Consultas por gramaje (BST)
+
+Guardar cambios en medicinas.csv
+
+Salir
